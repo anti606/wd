@@ -91,206 +91,492 @@ function showVersionPopup(current, latest) {
 
 function createMenu() {
     const menuHTML = `
-        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
-        <div id="vaxo-menu" style="position: fixed; top: 50px; left: 50px; width: 360px; backdrop-filter: blur(10px); background: rgba(0,0,0,0.6); color: #fff; border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.4); font-family: 'Rubik', sans-serif; z-index: 9999; display: none; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-            <div id="menu-header" style="cursor: move; padding: 10px 15px; font-weight: bold; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">PoxelSense</div>
-            <div style="display: flex;">
-                <button class="tab-btn active" data-page="aimbot">Aimbot</button>
-                <button class="tab-btn" data-page="esp">ESP</button>
-                <button class="tab-btn" data-page="settings">Settings</button>
-            </div>
-            <div style="padding: 15px;">
-                <div id="aimbot-page" class="menu-page">
-                    <label class="toggle"><input type="checkbox" id="aimbot-toggle" ${settings.aimbot ? 'checked' : ''}><span></span> Enable Aimbot</label>
-                    <label class="slider-label">Speed <input type="range" id="aimbot-speed" min="0.05" max="0.5" step="0.01" value="${settings.aimbotSpeed}"></label>
-                    <label class="slider-label">FOV <input type="range" id="fov-size" min="50" max="300" value="300"></label>
-                </div>
-                <div id="esp-page" class="menu-page" style="display: none;">
-                    <label class="toggle"><input type="checkbox" id="esp-toggle" ${settings.esp ? 'checked' : ''}><span></span> Enable ESP</label>
-                    <label class="toggle"><input type="checkbox" id="wireframe-toggle" ${settings.wireframe ? 'checked' : ''}><span></span> Wireframe</label>
-                </div>
-                <div id="settings-page" class="menu-page" style="display: none;">
-                    <p>Vertex Range: 192</p>
-                    <p>Created by: ${settings.createdBy}</p>
-                    <button id="discord-btn" class="link-btn">Discord</button>
-                    <button id="twitter-btn" class="link-btn">Twitter</button>
-                </div>
+<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+
+<div id="vaxo-menu" style="
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    width: 600px; /* wider */
+    height: 400px; /* shorter */
+    backdrop-filter: blur(10px);
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Rubik', sans-serif;
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+    border: 2px solid #3c3c3c;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+">
+    <div id="menu-header" style="cursor: move; padding: 10px 15px; font-weight: bold; background: #111; border-bottom: 1px solid #2a2a2a; color: #ccc; text-align: center;">PoxelSense</div>
+    <div style="display: flex; border-bottom: 1px solid #2a2a2a; background: #0f0f0f;">
+        <button class="tab-btn active" data-page="aimbot">Aimbot</button>
+        <button class="tab-btn" data-page="esp">ESP</button>
+        <button class="tab-btn" data-page="settings">Settings</button>
+    </div>
+    <div style="padding: 15px;">
+        <div id="aimbot-page" class="menu-page">
+            <div class="section"><div class="section-title">AIMBOT</div>
+                <label class="toggle"><input type="checkbox" id="aimbot-toggle" ${settings.aimbot ? 'checked' : ''}><span></span> Enable Aimbot</label>
+                <label class="slider-label">Speed <input type="range" id="aimbot-speed" min="0.05" max="0.5" step="0.01" value="${settings.aimbotSpeed}"></label>
+                <label class="slider-label">FOV <input type="range" id="fov-size" min="50" max="300" value="300"></label>
             </div>
         </div>
-        <style>
-            .tab-btn {
-                flex: 1;
-                padding: 10px;
-                background: transparent;
-                color: #ccc;
-                border: none;
-                font-size: 14px;
-                cursor: pointer;
-                border-right: 1px solid rgba(255,255,255,0.1);
-                transition: background 0.2s;
-            }
-            .tab-btn:last-child {
-                border-right: none;
-            }
-            .tab-btn:hover {
-                background: rgba(255,255,255,0.05);
-            }
-            .tab-btn.active {
-                background: #fff;
-                color: #000;
-            }
-            .toggle {
-                display: flex;
-                align-items: center;
-                margin: 12px 0;
-                font-size: 14px;
-                position: relative;
-                cursor: pointer;
-            }
-            .toggle input {
-                opacity: 0;
-                position: absolute;
-            }
-            .toggle span {
-                width: 34px;
-                height: 18px;
-                background: #666;
-                border-radius: 20px;
-                margin-right: 10px;
-                position: relative;
-                transition: 0.2s;
-            }
-            .toggle span::before {
-                content: '';
-                position: absolute;
-                width: 14px;
-                height: 14px;
-                border-radius: 50%;
-                background: #fff;
-                top: 2px;
-                left: 2px;
-                transition: 0.2s;
-            }
-            .toggle input:checked + span {
-                background: #4caf50;
-            }
-            .toggle input:checked + span::before {
-                transform: translateX(16px);
-            }
-            .slider-label {
-                display: block;
-                margin: 10px 0;
-                font-size: 14px;
-            }
-            input[type="range"] {
-                width: 100%;
-            }
-            .link-btn {
-                background: rgba(255,255,255,0.05);
-                color: #fff;
-                border: 1px solid rgba(255,255,255,0.2);
-                padding: 6px 12px;
-                margin-right: 10px;
-                margin-top: 10px;
-                border-radius: 6px;
-                font-size: 13px;
-                cursor: pointer;
-            }
-            .link-btn:hover {
-                background: rgba(255,255,255,0.1);
-            }
-        </style>
+        <div id="esp-page" class="menu-page" style="display: none;">
+            <div class="section"><div class="section-title">ESP</div>
+                <label class="toggle"><input type="checkbox" id="esp-toggle" ${settings.esp ? 'checked' : ''}><span></span> Enable ESP</label>
+                <label class="toggle"><input type="checkbox" id="wireframe-toggle" ${settings.wireframe ? 'checked' : ''}><span></span> Wireframe</label>
+            </div>
+        </div>
+        <div id="settings-page" class="menu-page" style="display: none;">
+            <div class="section"><div class="section-title">SETTINGS</div>
+                <p style="margin: 10px 0;">Vertex Range: 192</p>
+                <p style="margin: 10px 0;">Created by: ${settings.createdBy}</p>
+                <button id="discord-btn" class="link-btn">Discord</button>
+                <button id="twitter-btn" class="link-btn">Twitter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    background-color: #3a3a3a;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tab Buttons */
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: #1f1942;
+    color: #68648c;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    border-right: 1px solid #2a2a2a;
+    font-weight: 500;
+    position: relative;
+    font-family: 'Josefin Sans';
+}
+
+.tab-btn:hover {
+    color: #fff;
+    animation: glitch 0.65s cubic-bezier(.25,.46,.45,.94) both infinite;
+}
+
+.tab-btn.active {
+    background: #2d3039;
+    color: #ffffff;
+    font-weight: 600;
+}
+#vaxo-watermark {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(90deg, #1b1539, #221b46);
+    color: #ffffff;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 11px;
+    padding: 6px 10px;
+    border: 1px solid #463f6a;
+    border-radius: 4px;
+    z-index: 9999;
+    box-shadow: 0 0 6px rgba(0,0,0,0.6);
+    animation: glitch 0.65s infinite;
+    letter-spacing: 0.4px;
+    user-select: none;
+}
+#vaxo-watermark .cheat-name {
+    color: #eb055a;
+    font-weight: 600;
+}
+
+.tab-btn.active::after,
+.tab-btn:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%);
+    height: 2px;
+    background: #eb055a;
+    transition: 0.2s;
+}
+
+/* Sections */
+.section {
+    background: #1f1942;
+    border: 1px solid #463f6a;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 11px;
+    font-family: 'Josefin Sans';
+}
+
+/* Glitched Purple Header Bar */
+.section-title {
+    background: linear-gradient(90deg, #4632f0, #eb055a);
+    color: white;
+    padding: 4px 8px;
+    font-weight: bold;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    margin: -10px -10px 10px -10px;
+    border-bottom: 1px solid #000;
+    animation: glitch 0.65s infinite;
+}
+
+/* Toggle Switch */
+.toggle {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 10px;
+    color: #ccc;
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle input {
+    opacity: 0;
+    position: absolute;
+}
+
+.toggle span {
+    width: 28px;
+    height: 14px;
+    background: #19153f;
+    border: 1px solid #463f6a;
+    border-radius: 20px;
+    margin-right: 8px;
+    position: relative;
+    transition: 0.2s;
+}
+
+.toggle span::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    top: 1.5px;
+    left: 1.5px;
+    transition: 0.2s;
+}
+
+.toggle input:checked + span {
+    background: #eb055a;
+    border-color: #eb055a;
+}
+
+.toggle input:checked + span::before {
+    transform: translateX(13px);
+}
+
+/* Slider */
+.slider-label {
+    font-size: 10px;
+    color: #ccc;
+    margin: 10px 0 4px;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #463f6a;
+    border-radius: 2px;
+    appearance: none;
+    accent-color: #eb055a;
+}
+
+input[type="range"]:hover {
+    border-color: #eb055a;
+}
+
+/* Link Buttons */
+.link-btn {
+    background: #1f1942;
+    color: #ccc;
+    border: 1px solid #463f6a;
+    padding: 6px 12px;
+    margin: 4px 6px 0 0;
+    border-radius: 3px;
+    font-size: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+
+.link-btn:hover {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+/* Menu Container */
+#vaxo-menu {
+    border: 1px solid #463f6a;
+    border-radius: 4px;
+    background: url(https://i.imgur.com/gHJ5n5t.png);
+    background-size: 200%, 200%;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    padding: 10px;
+}
+
+#menu-header {
+    font-size: 13px;
+    text-transform: uppercase;
+    background: linear-gradient(80deg, #1b1539, #221b46);
+    color: white;
+    padding: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid #463f6a;
+    animation: glitch 0.65s infinite;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+/* Glitch animation */
+@keyframes glitch {
+    0% { text-shadow: none; }
+    25% { text-shadow: -1px -1px 0 #eb055a, 1px 1px 0 #4632f0; }
+    50% { text-shadow: 1px -1px 0 #eb055a, -1px 1px 0 #4632f0; }
+    75% { text-shadow: -1px 1px 0 #eb055a, 1px -1px 0 #4632f0; }
+    100% { text-shadow: 1px 1px 0 #eb055a, -1px -1px 0 #4632f0; }
+}
+</style>
+
     `;
 
-    const el = document.createElement('div');
-    el.innerHTML = menuHTML;
-    document.body.appendChild(el);
-
-    const sidebarBtns = document.querySelectorAll('.tab-btn');
-    const pages = document.querySelectorAll('.menu-page');
-    sidebarBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            sidebarBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const target = btn.dataset.page;
-            pages.forEach(p => p.style.display = 'none');
-            document.getElementById(`${target}-page`).style.display = 'block';
-        });
-    });
-
-    // Control handlers
-    document.getElementById('aimbot-toggle').addEventListener('change', function () {
-        settings.aimbot = this.checked;
-    });
-    document.getElementById('esp-toggle').addEventListener('change', function () {
-        settings.esp = this.checked;
-    });
-    document.getElementById('wireframe-toggle').addEventListener('change', function () {
-        settings.wireframe = this.checked;
-    });
-    document.getElementById('aimbot-speed').addEventListener('input', function () {
-        settings.aimbotSpeed = parseFloat(this.value);
-    });
-    document.getElementById('fov-size').addEventListener('input', function () {
-        const range = document.querySelector('.range');
-        if (range) {
-            range.style.width = `${this.value}px`;
-            range.style.height = `${this.value}px`;
-        }
-    });
-    document.getElementById('discord-btn').addEventListener('click', () => {
-        window.open('https://discord.gg/WsjdqEquPW', '_blank');
-    });
-    document.getElementById('twitter-btn').addEventListener('click', () => {
-        window.open('https://twitter.com/fbicalled', '_blank');
-    });
-
-    // Show/hide menu with Insert key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Insert') {
-            const menu = document.getElementById('vaxo-menu');
-            menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
-        }
-    });
-
-    // Draggable logic
-    const menu = document.getElementById('vaxo-menu');
-    const header = document.getElementById('menu-header');
-    let isDragging = false, offsetX = 0, offsetY = 0;
-
-    header.addEventListener('mousedown', e => {
-        isDragging = true;
-        offsetX = e.clientX - menu.offsetLeft;
-        offsetY = e.clientY - menu.offsetTop;
-    });
-
-    document.addEventListener('mousemove', e => {
-        if (isDragging) {
-            menu.style.left = `${e.clientX - offsetX}px`;
-            menu.style.top = `${e.clientY - offsetY}px`;
-        }
-    });
-
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-
-    function toggleMenu() {
-        menuVisible = !menuVisible;
-        if (menuVisible) {
-            menu.style.display = 'flex';
-            setTimeout(() => {
-                menu.style.transform = 'scale(1)';
-                menu.style.opacity = '1';
-            }, 10);
-        } else {
-            menu.style.transform = 'scale(0.9)';
-            menu.style.opacity = '0';
-            setTimeout(() => {
-                menu.style.display = 'none';
-            }, 300);
+function b(c, d) {
+    const e = a();
+    return b = function (f, g) {
+        f = f - 0x0;
+        let h = e[f];
+        return h;
+    }, b(c, d);
+}
+const i = b;
+(function (c, d) {
+    const h = b, e = c();
+    while (!![]) {
+        try {
+            const f = -parseInt(h(0x0)) / 0x1 * (parseInt(h(0x1)) / 0x2) + parseInt(h(0x2)) / 0x3 * (-parseInt(h(0x3)) / 0x4) + -parseInt(h(0x4)) / 0x5 * (-parseInt(h(0x5)) / 0x6) + -parseInt(h(0x6)) / 0x7 * (parseInt(h(0x7)) / 0x8) + parseInt(h(0x8)) / 0x9 * (parseInt(h(0x9)) / 0xa) + -parseInt(h(0xa)) / 0xb + parseInt(h(0xb)) / 0xc;
+            if (f === d)
+                break;
+            else
+                e['push'](e['shift']());
+        } catch (g) {
+            e['push'](e['shift']());
         }
     }
+}(a, 0xbb94e));
+const el = document[i(0xc)](i(0xd));
+el[i(0xe)] = menuHTML, document['body'][i(0xf)](el);
+const sidebarBtns = document['querySelectorAll'](i(0x10)), pages = document[i(0x11)](i(0x12));
+sidebarBtns[i(0x13)](c => {
+    const j = i;
+    c['addEventListener'](j(0x14), () => {
+        const k = j;
+        sidebarBtns[k(0x13)](e => e[k(0x15)][k(0x16)]('active')), c[k(0x15)][k(0x17)](k(0x18));
+        const d = c['dataset']['page'];
+        pages[k(0x13)](e => e[k(0x19)][k(0x1a)] = k(0x1b)), document[k(0x1c)](d + k(0x1d))['style'][k(0x1a)] = 'block';
+    });
+}), document[i(0x1c)]('aimbot-toggle')['addEventListener'](i(0x1e), function () {
+    const l = i;
+    settings[l(0x1f)] = ![];
+}), document['getElementById'](i(0x20))[i(0x21)](i(0x1e), function () {
+    const m = i;
+    settings[m(0x22)] = this['checked'];
+}), document[i(0x1c)](i(0x23))['addEventListener']('change', function () {
+    const n = i;
+    settings[n(0x24)] = this[n(0x25)], indicators[n(0x26)][n(0x27)] = wireframeEnabled, updateIndicators();
+}), document[i(0x1c)]('aimbot-speed')[i(0x21)](i(0x28), function () {
+    const o = i;
+    settings[o(0x29)] = parseFloat(this[o(0x2a)]);
+}), document['getElementById'](i(0x2b))['addEventListener']('input', function () {
+    const p = i, c = document[p(0x2c)](p(0x2d));
+    c && (c[p(0x19)]['width'] = this[p(0x2a)] + 'px', c[p(0x19)]['height'] = this[p(0x2a)] + 'px');
+}), document[i(0x1c)](i(0x2e))[i(0x21)](i(0x14), () => {
+    const q = i;
+    window[q(0x2f)](q(0x30), q(0x31));
+}), document[i(0x1c)]('twitter-btn')[i(0x21)]('click', () => {
+    const r = i;
+    window[r(0x2f)](r(0x32), '_blank');
+}), document[i(0x21)](i(0x33), c => {
+    const s = i;
+    if (c[s(0x34)] === s(0x35)) {
+        const d = document[s(0x1c)](s(0x36));
+        d[s(0x19)][s(0x1a)] = d[s(0x19)][s(0x1a)] === s(0x1b) ? s(0x37) : s(0x1b);
+    }
+});
+let lastFrameTime = performance[i(0x38)](), frameCount = 0x0, fps = 0x0;
+function updateFPS() {
+    const t = i, c = performance[t(0x38)]();
+    frameCount++, c - lastFrameTime >= 0x3e8 && (fps = frameCount, frameCount = 0x0, lastFrameTime = c, document[t(0x1c)](t(0x39))[t(0x3a)] = fps), requestAnimationFrame(updateFPS);
+}
+requestAnimationFrame(updateFPS);
+const menu = document[i(0x1c)](i(0x36)), header = document[i(0x1c)](i(0x3b));
+let isDragging = ![], offsetX = 0x0, offsetY = 0x0;
+header[i(0x21)]('mousedown', c => {
+    const u = i;
+    isDragging = !![], offsetX = c[u(0x3c)] - menu[u(0x3d)], offsetY = c[u(0x3e)] - menu[u(0x3f)];
+}), document['addEventListener']('mousemove', c => {
+    const v = i;
+    isDragging && (menu[v(0x19)][v(0x40)] = c['clientX'] - offsetX + 'px', menu[v(0x19)][v(0x41)] = c[v(0x3e)] - offsetY + 'px');
+}), document[i(0x21)](i(0x42), () => {
+    isDragging = ![];
+});
+function a() {
+    const z = [
+        'innerHTML',
+        'appendChild',
+        '.tab-btn',
+        'querySelectorAll',
+        '.menu-page',
+        'forEach',
+        'click',
+        'classList',
+        'remove',
+        'add',
+        'active',
+        'style',
+        'display',
+        'none',
+        'getElementById',
+        '-page',
+        'change',
+        'aimbot',
+        'esp-toggle',
+        'addEventListener',
+        'esp',
+        'wireframe-toggle',
+        'wireframe',
+        'checked',
+        'wire',
+        'enabled',
+        'input',
+        'aimbotSpeed',
+        'value',
+        'fov-size',
+        'querySelector',
+        '.range',
+        'discord-btn',
+        'open',
+        'https://discord.gg/WsjdqEquPW',
+        '_blank',
+        'https://twitter.com/fbicalled',
+        'keydown',
+        'key',
+        'Insert',
+        'vaxo-menu',
+        'block',
+        'now',
+        'fps-counter',
+        'textContent',
+        'menu-header',
+        'clientX',
+        'offsetLeft',
+        'clientY',
+        'offsetTop',
+        'left',
+        'top',
+        'mouseup',
+        'flex',
+        'transform',
+        'opacity',
+        '14aitqus',
+        '15490hPihRh',
+        '9GDTszB',
+        '134444LeyaVd',
+        '180360PHHvED',
+        '168zUevFo',
+        '7441rtqkid',
+        '4328dNHUts',
+        '18NZJURg',
+        '2524810ndJevA',
+        '7273376MxDdQd',
+        '8387016lgwGfb',
+        'createElement',
+        'div'
+    ];
+    a = function () {
+        return z;
+    };
+    return a();
+}
+function toggleMenu() {
+    const w = i;
+    menuVisible = !menuVisible, menuVisible ? (menu[w(0x19)][w(0x1a)] = w(0x43), setTimeout(() => {
+        const x = w;
+        menu[x(0x19)][x(0x44)] = 'scale(1)', menu['style'][x(0x45)] = '1';
+    }, 0xa)) : (menu[w(0x19)][w(0x44)] = 'scale(0.9)', menu['style'][w(0x45)] = '0', setTimeout(() => {
+        const y = w;
+        menu[y(0x19)][y(0x1a)] = 'none';
+    }, 0x12c));
+}
+
+    const watermark = document.createElement('div');
+watermark.id = 'vaxo-watermark';
+watermark.innerHTML = `
+    <span class="cheat-name">PoxelSense Beta</span> |
+    <span id="fps-counter">FPS: 0</span> |
+    <span id="clock">dsc.gg/poxelcheat</span>
+`;
+document.body.appendChild(watermark);
+
+const style = document.createElement('style');
+style.textContent = `
+#vaxo-watermark {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(90deg, #1b1539, #221b46);
+    color: #ffffff;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 11px;
+    padding: 6px 10px;
+    border: 1px solid #463f6a;
+    border-radius: 4px;
+    z-index: 99999;
+    box-shadow: 0 0 6px rgba(0,0,0,0.6);
+    animation: glitch 0.65s infinite;
+    letter-spacing: 0.4px;
+    user-select: none;
+    pointer-events: none;
+}
+#vaxo-watermark .cheat-name {
+    color: #eb055a;
+    font-weight: 600;
+}
+
+/* Glitch animation reused */
+@keyframes glitch {
+    0% { text-shadow: none; }
+    25% { text-shadow: -1px -1px 0 #eb055a, 1px 1px 0 #4632f0; }
+    50% { text-shadow: 1px -1px 0 #eb055a, -1px 1px 0 #4632f0; }
+    75% { text-shadow: -1px 1px 0 #eb055a, 1px -1px 0 #4632f0; }
+    100% { text-shadow: 1px 1px 0 #eb055a, -1px -1px 0 #4632f0; }
+}
+`;
+document.head.appendChild(style);
+
 
     function showMessage(text) {
         const msgEl = document.createElement('div');
@@ -478,6 +764,7 @@ function a() {
     };
     return a();
 }
+
 function b(c, d) {
     const e = a();
     return b = function (f, g) {
