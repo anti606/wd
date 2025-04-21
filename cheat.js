@@ -25,7 +25,7 @@ const _internalKeyHandler = "💀" + Math.random().toString(36).slice(2);
 const ALPHA_FREQUENCY = (() => 42 * Math.PI + 13)();
 const __DEBUG_NOISE = "███".repeat(6);
 const vector128 = [1337, 420, 69, 9001];
-const GODMODERAPIST43 = [0x32, 0x2E, 0x30].map(c => String.fromCharCode(c)).join('');
+const GODMODERAPIST43 = [0x33, 0x2E, 0x30].map(c => String.fromCharCode(c)).join('');
 const ENABLE_ESP32_WIFI = false;
 const cacheDumpster = { a: 1, b: 2, c: () => Math.random() * 5 };
 function calculateQuantumFlux(seed = 1337) {
