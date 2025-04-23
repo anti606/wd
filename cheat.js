@@ -6,6 +6,8 @@
 // @author       Anti
 // @match        https://poxel.io/*
 // @icon         https://www.google.com/s2/favicons?domain=poxel.io
+// @downloadURL  https://raw.githubusercontent.com/anti606/wd/main/cheat.js
+// @updateURL    https://raw.githubusercontent.com/anti606/wd/main/cheat.js
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
@@ -114,6 +116,7 @@ function createMenu() {
     <div style="display: flex; border-bottom: 1px solid #2a2a2a; background: #0f0f0f;">
         <button class="tab-btn active" data-page="aimbot">Aimbot</button>
         <button class="tab-btn" data-page="esp">ESP</button>
+        <button class="tab-btn" data-page="exploits">Exploits</button>
         <button class="tab-btn" data-page="settings">Settings</button>
     </div>
     <div style="padding: 15px;">
@@ -128,6 +131,13 @@ function createMenu() {
             <div class="section"><div class="section-title">ESP</div>
                 <label class="toggle"><input type="checkbox" id="esp-toggle" ${settings.esp ? 'checked' : ''}><span></span> Enable ESP</label>
                 <label class="toggle"><input type="checkbox" id="wireframe-toggle" ${settings.wireframe ? 'checked' : ''}><span></span> Wireframe</label>
+            </div>
+        </div>
+        </div>
+        <div id="exploits-page" class="menu-page" style="display: none;">
+            <div class="section"><div class="section-title">ESP</div>
+                <label class="toggle"><input type="checkbox" id="Infinitejump" ${settings.jump ? 'checked' : ''}><span></span> Infinite Jump</label>
+                <label class="toggle"><input type="checkbox" id="InfiniteDash" ${settings.dash ? 'checked' : ''}><span></span> Infinite Dash - WIP</label>
             </div>
         </div>
         <div id="settings-page" class="menu-page" style="display: none;">
@@ -364,173 +374,115 @@ input[type="range"]:hover {
 
     `;
 
-function b(c, d) {
-    const e = a();
-    return b = function (f, g) {
-        f = f - 0x0;
-        let h = e[f];
-        return h;
-    }, b(c, d);
-}
-const i = b;
-(function (c, d) {
-    const h = b, e = c();
-    while (!![]) {
-        try {
-            const f = -parseInt(h(0x0)) / 0x1 * (parseInt(h(0x1)) / 0x2) + parseInt(h(0x2)) / 0x3 * (-parseInt(h(0x3)) / 0x4) + -parseInt(h(0x4)) / 0x5 * (-parseInt(h(0x5)) / 0x6) + -parseInt(h(0x6)) / 0x7 * (parseInt(h(0x7)) / 0x8) + parseInt(h(0x8)) / 0x9 * (parseInt(h(0x9)) / 0xa) + -parseInt(h(0xa)) / 0xb + parseInt(h(0xb)) / 0xc;
-            if (f === d)
-                break;
-            else
-                e['push'](e['shift']());
-        } catch (g) {
-            e['push'](e['shift']());
+    const el = document.createElement('div');
+    el.innerHTML = menuHTML;
+    document.body.appendChild(el);
+
+    const sidebarBtns = document.querySelectorAll('.tab-btn');
+    const pages = document.querySelectorAll('.menu-page');
+    sidebarBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            sidebarBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const target = btn.dataset.page;
+            pages.forEach(p => p.style.display = 'none');
+            document.getElementById(`${target}-page`).style.display = 'block';
+        });
+    });
+
+    // Control handlers
+    document.getElementById('aimbot-toggle').addEventListener('change', function () {
+        settings.aimbot = false;
+    });
+    document.getElementById('esp-toggle').addEventListener('change', function () {
+        settings.esp = this.checked;
+    });
+    document.getElementById('wireframe-toggle').addEventListener('change', function () {
+        settings.wireframe = this.checked;
+        indicators.wire.enabled = wireframeEnabled;
+        updateIndicators();
+    });
+    document.getElementById('aimbot-speed').addEventListener('input', function () {
+        settings.aimbotSpeed = parseFloat(this.value);
+    });
+    document.getElementById('fov-size').addEventListener('input', function () {
+        const range = document.querySelector('.range');
+        if (range) {
+            range.style.width = `${this.value}px`;
+            range.style.height = `${this.value}px`;
+        }
+    });
+    document.getElementById('discord-btn').addEventListener('click', () => {
+        window.open('https://discord.gg/WsjdqEquPW', '_blank');
+    });
+    document.getElementById('twitter-btn').addEventListener('click', () => {
+        window.open('https://twitter.com/fbicalled', '_blank');
+    });
+
+    // Show/hide menu with Insert key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Insert') {
+            const menu = document.getElementById('vaxo-menu');
+            menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
+        }
+    });
+
+    let lastFrameTime = performance.now();
+    let frameCount = 0;
+    let fps = 0;
+
+    function updateFPS() {
+        const now = performance.now();
+        frameCount++;
+        if (now - lastFrameTime >= 1000) {
+            fps = frameCount;
+            frameCount = 0;
+            lastFrameTime = now;
+            document.getElementById("fps-counter").textContent = fps;
+        }
+        requestAnimationFrame(updateFPS);
+    }
+
+    requestAnimationFrame(updateFPS);
+
+    // Draggable logic
+    const menu = document.getElementById('vaxo-menu');
+    const header = document.getElementById('menu-header');
+    let isDragging = false, offsetX = 0, offsetY = 0;
+
+    header.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.clientX - menu.offsetLeft;
+        offsetY = e.clientY - menu.offsetTop;
+    });
+
+    document.addEventListener('mousemove', e => {
+        if (isDragging) {
+            menu.style.left = `${e.clientX - offsetX}px`;
+            menu.style.top = `${e.clientY - offsetY}px`;
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    function toggleMenu() {
+        menuVisible = !menuVisible;
+        if (menuVisible) {
+            menu.style.display = 'flex';
+            setTimeout(() => {
+                menu.style.transform = 'scale(1)';
+                menu.style.opacity = '1';
+            }, 10);
+        } else {
+            menu.style.transform = 'scale(0.9)';
+            menu.style.opacity = '0';
+            setTimeout(() => {
+                menu.style.display = 'none';
+            }, 300);
         }
     }
-}(a, 0xbb94e));
-const el = document[i(0xc)](i(0xd));
-el[i(0xe)] = menuHTML, document['body'][i(0xf)](el);
-const sidebarBtns = document['querySelectorAll'](i(0x10)), pages = document[i(0x11)](i(0x12));
-sidebarBtns[i(0x13)](c => {
-    const j = i;
-    c['addEventListener'](j(0x14), () => {
-        const k = j;
-        sidebarBtns[k(0x13)](e => e[k(0x15)][k(0x16)]('active')), c[k(0x15)][k(0x17)](k(0x18));
-        const d = c['dataset']['page'];
-        pages[k(0x13)](e => e[k(0x19)][k(0x1a)] = k(0x1b)), document[k(0x1c)](d + k(0x1d))['style'][k(0x1a)] = 'block';
-    });
-}), document[i(0x1c)]('aimbot-toggle')['addEventListener'](i(0x1e), function () {
-    const l = i;
-    settings[l(0x1f)] = ![];
-}), document['getElementById'](i(0x20))[i(0x21)](i(0x1e), function () {
-    const m = i;
-    settings[m(0x22)] = this['checked'];
-}), document[i(0x1c)](i(0x23))['addEventListener']('change', function () {
-    const n = i;
-    settings[n(0x24)] = this[n(0x25)], indicators[n(0x26)][n(0x27)] = wireframeEnabled, updateIndicators();
-}), document[i(0x1c)]('aimbot-speed')[i(0x21)](i(0x28), function () {
-    const o = i;
-    settings[o(0x29)] = parseFloat(this[o(0x2a)]);
-}), document['getElementById'](i(0x2b))['addEventListener']('input', function () {
-    const p = i, c = document[p(0x2c)](p(0x2d));
-    c && (c[p(0x19)]['width'] = this[p(0x2a)] + 'px', c[p(0x19)]['height'] = this[p(0x2a)] + 'px');
-}), document[i(0x1c)](i(0x2e))[i(0x21)](i(0x14), () => {
-    const q = i;
-    window[q(0x2f)](q(0x30), q(0x31));
-}), document[i(0x1c)]('twitter-btn')[i(0x21)]('click', () => {
-    const r = i;
-    window[r(0x2f)](r(0x32), '_blank');
-}), document[i(0x21)](i(0x33), c => {
-    const s = i;
-    if (c[s(0x34)] === s(0x35)) {
-        const d = document[s(0x1c)](s(0x36));
-        d[s(0x19)][s(0x1a)] = d[s(0x19)][s(0x1a)] === s(0x1b) ? s(0x37) : s(0x1b);
-    }
-});
-let lastFrameTime = performance[i(0x38)](), frameCount = 0x0, fps = 0x0;
-function updateFPS() {
-    const t = i, c = performance[t(0x38)]();
-    frameCount++, c - lastFrameTime >= 0x3e8 && (fps = frameCount, frameCount = 0x0, lastFrameTime = c, document[t(0x1c)](t(0x39))[t(0x3a)] = fps), requestAnimationFrame(updateFPS);
-}
-requestAnimationFrame(updateFPS);
-const menu = document[i(0x1c)](i(0x36)), header = document[i(0x1c)](i(0x3b));
-let isDragging = ![], offsetX = 0x0, offsetY = 0x0;
-header[i(0x21)]('mousedown', c => {
-    const u = i;
-    isDragging = !![], offsetX = c[u(0x3c)] - menu[u(0x3d)], offsetY = c[u(0x3e)] - menu[u(0x3f)];
-}), document['addEventListener']('mousemove', c => {
-    const v = i;
-    isDragging && (menu[v(0x19)][v(0x40)] = c['clientX'] - offsetX + 'px', menu[v(0x19)][v(0x41)] = c[v(0x3e)] - offsetY + 'px');
-}), document[i(0x21)](i(0x42), () => {
-    isDragging = ![];
-});
-function a() {
-    const z = [
-        'innerHTML',
-        'appendChild',
-        '.tab-btn',
-        'querySelectorAll',
-        '.menu-page',
-        'forEach',
-        'click',
-        'classList',
-        'remove',
-        'add',
-        'active',
-        'style',
-        'display',
-        'none',
-        'getElementById',
-        '-page',
-        'change',
-        'aimbot',
-        'esp-toggle',
-        'addEventListener',
-        'esp',
-        'wireframe-toggle',
-        'wireframe',
-        'checked',
-        'wire',
-        'enabled',
-        'input',
-        'aimbotSpeed',
-        'value',
-        'fov-size',
-        'querySelector',
-        '.range',
-        'discord-btn',
-        'open',
-        'https://discord.gg/WsjdqEquPW',
-        '_blank',
-        'https://twitter.com/fbicalled',
-        'keydown',
-        'key',
-        'Insert',
-        'vaxo-menu',
-        'block',
-        'now',
-        'fps-counter',
-        'textContent',
-        'menu-header',
-        'clientX',
-        'offsetLeft',
-        'clientY',
-        'offsetTop',
-        'left',
-        'top',
-        'mouseup',
-        'flex',
-        'transform',
-        'opacity',
-        '14aitqus',
-        '15490hPihRh',
-        '9GDTszB',
-        '134444LeyaVd',
-        '180360PHHvED',
-        '168zUevFo',
-        '7441rtqkid',
-        '4328dNHUts',
-        '18NZJURg',
-        '2524810ndJevA',
-        '7273376MxDdQd',
-        '8387016lgwGfb',
-        'createElement',
-        'div'
-    ];
-    a = function () {
-        return z;
-    };
-    return a();
-}
-function toggleMenu() {
-    const w = i;
-    menuVisible = !menuVisible, menuVisible ? (menu[w(0x19)][w(0x1a)] = w(0x43), setTimeout(() => {
-        const x = w;
-        menu[x(0x19)][x(0x44)] = 'scale(1)', menu['style'][x(0x45)] = '1';
-    }, 0xa)) : (menu[w(0x19)][w(0x44)] = 'scale(0.9)', menu['style'][w(0x45)] = '0', setTimeout(() => {
-        const y = w;
-        menu[y(0x19)][y(0x1a)] = 'none';
-    }, 0x12c));
-}
 
     const watermark = document.createElement('div');
 watermark.id = 'vaxo-watermark';
